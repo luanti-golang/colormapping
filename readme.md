@@ -2,7 +2,6 @@
 Golang minetest colormappings
 
 ![](https://github.com/minetest-go/colormapping/workflows/test/badge.svg)
-[![Coverage Status](https://coveralls.io/repos/github/minetest-go/colormapping/badge.svg)](https://coveralls.io/github/minetest-go/colormapping)
 
 # Example
 
