@@ -3,7 +3,7 @@ package colormapping_test
 import (
 	"testing"
 
-	"github.com/minetest-go/colormapping"
+	"github.com/luanti-golang/colormapping"
 	"github.com/stretchr/testify/assert"
 )
 

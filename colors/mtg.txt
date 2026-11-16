@@ -1,4 +1,4 @@
-# Minetest Game
+# Luanti Game
 
 beds:bed_bottom 130 3 3
 beds:bed_top 178 116 116

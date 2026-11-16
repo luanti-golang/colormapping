@@ -1,6 +1,4 @@
-// Deprecated: the repository moved to github.com/luanti-golang/colormapping
-
-module github.com/minetest-go/colormapping
+module github.com/luanti-golang/colormapping
 
 go 1.22
 

@@ -1,7 +1,7 @@
 
-Golang minetest colormappings
+Golang luanti colormappings
 
-![](https://github.com/minetest-go/colormapping/workflows/test/badge.svg)
+![](https://github.com/luanti-golang/colormapping/workflows/test/badge.svg)
 
 # Example
 
