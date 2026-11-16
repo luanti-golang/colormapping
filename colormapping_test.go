@@ -1,6 +1,8 @@
 package colormapping_test
 
 import (
+	"strconv"
+	"sync"
 	"testing"
 
 	"github.com/luanti-golang/colormapping"
@@ -49,6 +51,7 @@ func TestNewMapping(t *testing.T) {
 	assert.Equal(t, uint8(107-30), c.R)
 	assert.Equal(t, uint8(54-30), c.G)
 	assert.Equal(t, uint8(53-30), c.B)
+	assert.Equal(t, uint8(255), c.A)
 
 }
 
@@ -75,4 +78,44 @@ func TestLoadErrors(t *testing.T) {
 	m := colormapping.NewColorMapping()
 	_, err := m.LoadVFSColors("bogus.txt")
 	assert.Error(t, err)
+}
+
+func TestCachedMissInvalidatedByLoad(t *testing.T) {
+	m := colormapping.NewColorMapping()
+	assert.Nil(t, m.GetColor("my:node", 0))
+	assert.Nil(t, m.GetColor("my:node", 0)) // cached miss
+
+	_, err := m.LoadBytes([]byte("my:node 1 2 3"))
+	assert.NoError(t, err)
+
+	c := m.GetColor("my:node", 0)
+	assert.NotNil(t, c)
+	assert.Equal(t, uint8(1), c.R)
+	assert.Equal(t, uint8(2), c.G)
+	assert.Equal(t, uint8(3), c.B)
+}
+
+func TestConcurrentGetColorAndLoad(t *testing.T) {
+	m := colormapping.NewColorMapping()
+	var wg sync.WaitGroup
+	for i := 0; i < 4; i++ {
+		wg.Add(1)
+		go func(i int) {
+			defer wg.Done()
+			for j := 0; j < 1000; j++ {
+				m.GetColor("my:red_node_"+strconv.Itoa(i*1000+j), 0)
+				m.GetColor("my:node", 0)
+			}
+		}(i)
+	}
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		for j := 0; j < 100; j++ {
+			_, err := m.LoadBytes([]byte("my:node 1 2 3"))
+			assert.NoError(t, err)
+		}
+	}()
+	wg.Wait()
+	assert.NotNil(t, m.GetColor("my:node", 0))
 }
